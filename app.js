@@ -30,7 +30,8 @@ const base = () => `data/styles/${st.style.id}`;
 const nameOf = (id) => st.index.creatures.find((c) => c.id === id)?.name ?? id;
 
 async function init() {
-  st.index = await (await fetch("data/index.json")).json();
+  // スタイル一覧は更新されるので、毎回サーバに確認する（GitHub Pages のキャッシュ対策）
+  st.index = await (await fetch("data/index.json", { cache: "no-cache" })).json();
   for (const s of st.index.styles) els.style.add(new Option(s.name, s.id));
   const pref = st.index.styles.find((s) => s.id === params.get("style"))
     ?? st.index.styles.find((s) => s.id === "anime_xl") ?? st.index.styles[0];
