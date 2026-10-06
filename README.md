@@ -9,7 +9,7 @@
 | スタイル | 生成モデル | ブラウザ用デコーダ |
 |---|---|---|
 | ファンタジーアニメ | [Animagine XL 4.0](https://huggingface.co/cagliostrolab/animagine-xl-4.0)（CreativeML Open RAIL++-M） | TAESDXL |
-| ダークファンタジー／絵本・水彩風 | [SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)（Stability AI） | TAESD |
+| ダークファンタジー | [SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)（Stability AI） | TAESD |
 
 デコーダ：[TAESD / TAESDXL](https://github.com/madebyollin/taesd)（MIT）をONNXに変換したもの。
 

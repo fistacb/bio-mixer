@@ -59,25 +59,6 @@
         64
       ],
       "decoder": "taesd"
-    },
-    {
-      "id": "storybook",
-      "name": "絵本・水彩風",
-      "frames": 31,
-      "creatures": [
-        "dog",
-        "cat",
-        "owl",
-        "octopus",
-        "rabbit"
-      ],
-      "latent_shape": [
-        1,
-        4,
-        64,
-        64
-      ],
-      "decoder": "taesd"
     }
   ]
 }
