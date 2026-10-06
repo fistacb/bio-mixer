@@ -1,0 +1,22 @@
+{
+  "id": "storybook",
+  "name": "絵本・水彩風",
+  "prompt": "a cute {noun}, fantasy storybook illustration, soft watercolor painting, gentle pastel colors, tiny glowing magic sparkles, full body, single animal, centered, side view, plain cream paper background",
+  "seed": 1234,
+  "frames": 31,
+  "latent_shape": [
+    1,
+    4,
+    64,
+    64
+  ],
+  "image_size": 512,
+  "creatures": [
+    "dog",
+    "cat",
+    "owl",
+    "octopus",
+    "rabbit"
+  ],
+  "built_at": "2026-10-07T00:44:32"
+}

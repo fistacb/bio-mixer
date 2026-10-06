@@ -1,0 +1,22 @@
+{
+  "id": "darkfantasy",
+  "name": "ダークファンタジー",
+  "prompt": "a mysterious {noun}, dark fantasy oil painting, rich deep colors, dramatic rim lighting, ethereal mist, full body, single animal, centered, side view, plain dark background",
+  "seed": 1234,
+  "frames": 31,
+  "latent_shape": [
+    1,
+    4,
+    64,
+    64
+  ],
+  "image_size": 512,
+  "creatures": [
+    "dog",
+    "cat",
+    "owl",
+    "octopus",
+    "rabbit"
+  ],
+  "built_at": "2026-10-07T00:46:08"
+}

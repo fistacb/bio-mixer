@@ -1,0 +1,36 @@
+{
+  "id": "anime_xl",
+  "name": "ファンタジーアニメ",
+  "model": "cagliostrolab/animagine-xl-4.0",
+  "license": "CreativeML Open RAIL++-M",
+  "prompt": "no humans, animal focus, solo, cute {noun}, full body, sitting, looking at viewer, big eyes, fantasy, anime coloring, soft lighting, simple background, white background, safe, masterpiece, high score, great score, absurdres",
+  "negative": "lowres, bad anatomy, text, error, cropped, worst quality, low quality, low score, bad score, average score, signature, watermark, username, blurry, scenery, frame, border, multiple animals, humanoid, clothes, cape, cloak, hood, scarf, collar, necklace, jewelry, gem, crown, hat, ribbon, armor, accessories",
+  "seeds": {
+    "dog": 222,
+    "cat": 11,
+    "owl": 11,
+    "octopus": 222,
+    "rabbit": 222
+  },
+  "steps": 28,
+  "cfg": 5.0,
+  "sampler": "Euler",
+  "size": 1024,
+  "frames": 16,
+  "latent_shape": [
+    1,
+    4,
+    128,
+    128
+  ],
+  "decoder": "taesdxl",
+  "image_size": 512,
+  "creatures": [
+    "dog",
+    "cat",
+    "owl",
+    "octopus",
+    "rabbit"
+  ],
+  "built_at": "2026-10-07T02:22:18"
+}

@@ -1,0 +1,83 @@
+{
+  "creatures": [
+    {
+      "id": "dog",
+      "name": "犬"
+    },
+    {
+      "id": "cat",
+      "name": "猫"
+    },
+    {
+      "id": "owl",
+      "name": "フクロウ"
+    },
+    {
+      "id": "octopus",
+      "name": "タコ"
+    },
+    {
+      "id": "rabbit",
+      "name": "ウサギ"
+    }
+  ],
+  "styles": [
+    {
+      "id": "anime_xl",
+      "name": "ファンタジーアニメ",
+      "frames": 16,
+      "creatures": [
+        "dog",
+        "cat",
+        "owl",
+        "octopus",
+        "rabbit"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        128,
+        128
+      ],
+      "decoder": "taesdxl"
+    },
+    {
+      "id": "darkfantasy",
+      "name": "ダークファンタジー",
+      "frames": 31,
+      "creatures": [
+        "dog",
+        "cat",
+        "owl",
+        "octopus",
+        "rabbit"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        64,
+        64
+      ],
+      "decoder": "taesd"
+    },
+    {
+      "id": "storybook",
+      "name": "絵本・水彩風",
+      "frames": 31,
+      "creatures": [
+        "dog",
+        "cat",
+        "owl",
+        "octopus",
+        "rabbit"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        64,
+        64
+      ],
+      "decoder": "taesd"
+    }
+  ]
+}
