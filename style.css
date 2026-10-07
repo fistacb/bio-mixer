@@ -20,6 +20,9 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Zen Ma
 main { max-width: 980px; margin: 0 auto; padding: 20px 16px 40px; }
 header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
 h1 { margin: 0; font-size: 28px; letter-spacing: .08em; }
+.pages { display: flex; gap: 14px; margin-top: 6px; font-size: 14px; }
+.pages a { color: var(--muted); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+.pages a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
 .tabs { display: flex; gap: 6px; }
 .tabs button { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--muted);
   border-radius: 999px; padding: 6px 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }

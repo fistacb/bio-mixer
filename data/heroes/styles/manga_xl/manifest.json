@@ -1,0 +1,36 @@
+{
+  "id": "manga_xl",
+  "name": "現代マンガ",
+  "model": "cagliostrolab/animagine-xl-4.0",
+  "license": "CreativeML Open RAIL++-M",
+  "prompt": "solo, {subject}, full body, standing, looking at viewer, modern, japanese manga style, clean lineart, cel shading, simple background, white background, safe, masterpiece, high score, great score, absurdres",
+  "negative": "nsfw, child, fantasy, armor, multiple views, multiple characters, scenery, frame, lowres, bad anatomy, bad hands, text, cropped, worst quality, low quality, low score, bad score, watermark, blurry",
+  "seeds": {
+    "youngman": 222,
+    "woman": 222,
+    "wolf": 11,
+    "bear": 11,
+    "dragon": 11
+  },
+  "steps": 28,
+  "cfg": 5.0,
+  "sampler": "Euler",
+  "size": 1024,
+  "frames": 16,
+  "latent_shape": [
+    1,
+    4,
+    128,
+    128
+  ],
+  "decoder": "taesdxl",
+  "image_size": 512,
+  "creatures": [
+    "youngman",
+    "woman",
+    "wolf",
+    "bear",
+    "dragon"
+  ],
+  "built_at": "2026-10-07T09:21:43"
+}

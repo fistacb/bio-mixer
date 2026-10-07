@@ -4,7 +4,9 @@
 const ORT_VER = "1.30.0";
 const params = new URLSearchParams(location.search);
 // スタイルごとのデコーダ（SD系=TAESD、SDXL系=TAESDXL）
-const DECODERS = { taesd: "models/taesd_decoder.onnx", taesdxl: "models/taesdxl_decoder.onnx" };
+// ページごとの置き場所（別ページからは window.BIO_MIXER で上書き）
+const CONF = Object.assign({ root: "", data: "data/" }, window.BIO_MIXER || {});
+const DECODERS = { taesd: `${CONF.root}models/taesd_decoder.onnx`, taesdxl: `${CONF.root}models/taesdxl_decoder.onnx` };
 const latentShape = () => st.style.latent_shape ?? [1, 4, 64, 64];
 const latentSize = () => latentShape().reduce((x, y) => x * y, 1);
 
@@ -26,12 +28,16 @@ const els = {
 const ctx = els.canvas.getContext("2d");
 let imgData = null;
 
-const base = () => `data/styles/${st.style.id}`;
+const base = () => `${CONF.data}styles/${st.style.id}`;
 const nameOf = (id) => st.index.creatures.find((c) => c.id === id)?.name ?? id;
 
 async function init() {
   // スタイル一覧は更新されるので、毎回サーバに確認する（GitHub Pages のキャッシュ対策）
-  st.index = await (await fetch("data/index.json", { cache: "no-cache" })).json();
+  st.index = await (await fetch(`${CONF.data}index.json`, { cache: "no-cache" })).json();
+  // 初期の組み合わせ：ページの生物セットにない場合は最初と最後の生物にする
+  const ids = st.index.creatures.map((c) => c.id);
+  if (!ids.includes(st.a)) st.a = ids[0];
+  if (!ids.includes(st.b)) st.b = ids[ids.length - 1];
   for (const s of st.index.styles) els.style.add(new Option(s.name, s.id));
   const pref = st.index.styles.find((s) => s.id === params.get("style"))
     ?? st.index.styles.find((s) => s.id === "anime_xl") ?? st.index.styles[0];

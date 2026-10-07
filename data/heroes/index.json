@@ -1,0 +1,45 @@
+{
+  "creatures": [
+    {
+      "id": "youngman",
+      "name": "青年"
+    },
+    {
+      "id": "woman",
+      "name": "女性"
+    },
+    {
+      "id": "wolf",
+      "name": "狼"
+    },
+    {
+      "id": "bear",
+      "name": "熊"
+    },
+    {
+      "id": "dragon",
+      "name": "ドラゴン"
+    }
+  ],
+  "styles": [
+    {
+      "id": "manga_xl",
+      "name": "現代マンガ",
+      "frames": 16,
+      "creatures": [
+        "youngman",
+        "woman",
+        "wolf",
+        "bear",
+        "dragon"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        128,
+        128
+      ],
+      "decoder": "taesdxl"
+    }
+  ]
+}
