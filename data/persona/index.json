@@ -19,6 +19,42 @@
   ],
   "styles": [
     {
+      "id": "manga_fire",
+      "name": "炎の熱血",
+      "frames": 7,
+      "creatures": [
+        "young_cool",
+        "old_cool",
+        "young_hot",
+        "old_hot"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        128,
+        128
+      ],
+      "decoder": "taesdxl",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "young_cool",
+        "old_cool",
+        "young_hot",
+        "old_hot"
+      ],
+      "axes": {
+        "x": [
+          "青年",
+          "老人"
+        ],
+        "y": [
+          "クール",
+          "熱血"
+        ]
+      }
+    },
+    {
       "id": "manga_xl",
       "name": "現代マンガ",
       "frames": 7,

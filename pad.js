@@ -16,7 +16,7 @@ async function init() {
   st.index = await (await fetch(`${CONF.data}index.json`, { cache: "no-cache" })).json();
   const grids = st.index.styles.filter((s) => s.mode === "grid2d");
   for (const s of grids) els.style.add(new Option(s.name, s.id));
-  st.style = grids.find((s) => s.id === params.get("style")) ?? grids[0];
+  st.style = grids.find((s) => s.id === params.get("style")) ?? grids.find((s) => s.id === "manga_xl") ?? grids[0];
   els.style.value = st.style.id;
   els.style.onchange = () => { st.style = grids.find((s) => s.id === els.style.value); renderCorners(); update(); };
   document.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
