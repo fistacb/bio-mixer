@@ -1,0 +1,58 @@
+{
+  "id": "body_turn",
+  "name": "体全体で向く",
+  "model": "cagliostrolab/animagine-xl-4.0",
+  "controlnet": "xinsir/controlnet-openpose-sdxl-1.0",
+  "license": "CreativeML Open RAIL++-M / Apache-2.0",
+  "prompt": "solo, 1boy, male focus, adult young man, short black hair, black eyes, white t-shirt, blue jeans, white sneakers, full body, standing, modern, japanese manga style, clean lineart, cel shading, simple background, white background, safe, masterpiece, high score, great score, absurdres",
+  "negative": "long hair, jacket, coat, hoodie, glasses, blonde hair, brown hair, colored background, nsfw, child, fantasy, multiple views, multiple characters, scenery, lowres, bad anatomy, bad hands, text, cropped, worst quality, low quality, watermark, blurry",
+  "seed": 222,
+  "steps": 28,
+  "cfg": 5.0,
+  "controlnet_scale": 1.5,
+  "weights_storage": "fp8",
+  "sampler": "Euler",
+  "size": 768,
+  "frames": 7,
+  "latent_shape": [
+    1,
+    4,
+    96,
+    96
+  ],
+  "decoder": "taesdxl768",
+  "image_size": 512,
+  "creatures": [
+    "back_left",
+    "back_right",
+    "front_left",
+    "front_right"
+  ],
+  "mode": "grid2d",
+  "grid": 7,
+  "order": [
+    "back_left",
+    "back_right",
+    "front_left",
+    "front_right"
+  ],
+  "axes": {
+    "x": [
+      "左を向く",
+      "右を向く"
+    ],
+    "y": [
+      "後ろを向く",
+      "前を向く"
+    ]
+  },
+  "angles": {
+    "back_left": -135,
+    "back_right": 135,
+    "front_left": -45,
+    "front_right": 45
+  },
+  "layout": "compass (bottom=front, top=back)",
+  "back_prompt_blend": "max(0, -cos(yaw))",
+  "built_at": "2026-10-07T20:47:34"
+}

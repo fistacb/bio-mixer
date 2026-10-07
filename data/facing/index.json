@@ -1,0 +1,110 @@
+{
+  "creatures": [
+    {
+      "id": "left_up",
+      "name": "左上を向く"
+    },
+    {
+      "id": "right_up",
+      "name": "右上を向く"
+    },
+    {
+      "id": "left_down",
+      "name": "左下を向く"
+    },
+    {
+      "id": "right_down",
+      "name": "右下を向く"
+    },
+    {
+      "id": "back_left",
+      "name": "左うしろ向き"
+    },
+    {
+      "id": "back_right",
+      "name": "右うしろ向き"
+    },
+    {
+      "id": "front_left",
+      "name": "左ななめ前向き"
+    },
+    {
+      "id": "front_right",
+      "name": "右ななめ前向き"
+    }
+  ],
+  "styles": [
+    {
+      "id": "body_turn",
+      "name": "体全体で向く",
+      "frames": 7,
+      "creatures": [
+        "back_left",
+        "back_right",
+        "front_left",
+        "front_right"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        96,
+        96
+      ],
+      "decoder": "taesdxl768",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "back_left",
+        "back_right",
+        "front_left",
+        "front_right"
+      ],
+      "axes": {
+        "x": [
+          "左を向く",
+          "右を向く"
+        ],
+        "y": [
+          "後ろを向く",
+          "前を向く"
+        ]
+      }
+    },
+    {
+      "id": "skeleton_fixed",
+      "name": "骨格で指定",
+      "frames": 7,
+      "creatures": [
+        "left_up",
+        "right_up",
+        "left_down",
+        "right_down"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        96,
+        96
+      ],
+      "decoder": "taesdxl768",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "left_up",
+        "right_up",
+        "left_down",
+        "right_down"
+      ],
+      "axes": {
+        "x": [
+          "左を向く",
+          "右を向く"
+        ],
+        "y": [
+          "上を向く",
+          "下を向く"
+        ]
+      }
+    }
+  ]
+}
