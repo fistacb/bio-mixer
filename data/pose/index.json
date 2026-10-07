@@ -1,0 +1,94 @@
+{
+  "creatures": [
+    {
+      "id": "stand_down",
+      "name": "立って腕を下ろす"
+    },
+    {
+      "id": "squat_down",
+      "name": "しゃがんで腕を下ろす"
+    },
+    {
+      "id": "stand_up",
+      "name": "立って腕を上げる"
+    },
+    {
+      "id": "squat_up",
+      "name": "しゃがんで腕を上げる"
+    }
+  ],
+  "styles": [
+    {
+      "id": "skeleton",
+      "name": "骨格で指定",
+      "frames": 7,
+      "creatures": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        96,
+        96
+      ],
+      "decoder": "taesdxl768",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "axes": {
+        "x": [
+          "立つ",
+          "しゃがむ"
+        ],
+        "y": [
+          "腕を下ろす",
+          "腕を上げる"
+        ]
+      }
+    },
+    {
+      "id": "text_pose",
+      "name": "言葉で指定",
+      "frames": 7,
+      "creatures": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        128,
+        128
+      ],
+      "decoder": "taesdxl",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "axes": {
+        "x": [
+          "立つ",
+          "しゃがむ"
+        ],
+        "y": [
+          "腕を下ろす",
+          "腕を上げる"
+        ]
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 const ORT_VER = "1.30.0";
 const params = new URLSearchParams(location.search);
 const CONF = Object.assign({ root: "../", data: "../data/persona/" }, window.BIO_MIXER || {});
-const DECODERS = { taesd: `${CONF.root}models/taesd_decoder.onnx`, taesdxl: `${CONF.root}models/taesdxl_decoder.onnx` };
+const DECODERS = { taesd: `${CONF.root}models/taesd_decoder.onnx`, taesdxl: `${CONF.root}models/taesdxl_decoder.onnx`, taesdxl768: `${CONF.root}models/taesdxl_decoder_768.onnx` };
 
 const st = { index: null, style: null, mode: "c", u: 0.5, v: 0.5, latents: new Map(), sessions: new Map(), busy: false, pending: false, backend: "" };
 const $ = (id) => document.getElementById(id);

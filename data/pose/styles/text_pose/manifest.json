@@ -1,0 +1,52 @@
+{
+  "id": "text_pose",
+  "name": "言葉で指定",
+  "model": "cagliostrolab/animagine-xl-4.0",
+  "license": "CreativeML Open RAIL++-M",
+  "prompt": "solo, 1boy, adult young man, {subject}, full body, looking at viewer, white shirt, jeans, modern, japanese manga style, clean lineart, cel shading, simple background, white background, safe, masterpiece, high score, great score, absurdres",
+  "negative": "nsfw, child, fantasy, armor, multiple views, multiple characters, scenery, frame, lowres, bad anatomy, bad hands, text, cropped, worst quality, low quality, low score, bad score, watermark, blurry",
+  "seeds": {
+    "stand_down": 222,
+    "squat_down": 222,
+    "stand_up": 222,
+    "squat_up": 222
+  },
+  "steps": 28,
+  "cfg": 5.0,
+  "sampler": "Euler",
+  "size": 1024,
+  "frames": 7,
+  "latent_shape": [
+    1,
+    4,
+    128,
+    128
+  ],
+  "decoder": "taesdxl",
+  "image_size": 512,
+  "creatures": [
+    "stand_down",
+    "squat_down",
+    "stand_up",
+    "squat_up"
+  ],
+  "built_at": "2026-10-07T14:40:31",
+  "mode": "grid2d",
+  "grid": 7,
+  "order": [
+    "stand_down",
+    "squat_down",
+    "stand_up",
+    "squat_up"
+  ],
+  "axes": {
+    "x": [
+      "立つ",
+      "しゃがむ"
+    ],
+    "y": [
+      "腕を下ろす",
+      "腕を上げる"
+    ]
+  }
+}

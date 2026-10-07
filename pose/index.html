@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生物ミキサー：ポーズ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=14">
+</head>
+<body>
+<main>
+  <header>
+    <div class="title">
+      <h1>生物ミキサー</h1>
+      <nav class="pages" aria-label="ページ">
+        <a href="../">どうぶつ</a>
+        <a href="../heroes/">ひと・けもの・竜</a>
+        <a href="../persona/">年齢×性格</a>
+        <a href="./" aria-current="page">ポーズ</a>
+        <a href="../about/">しくみ</a>
+      </nav>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-mode="c" aria-selected="true">C：事前生成<span>なめらか・軽い</span></button>
+      <button role="tab" data-mode="a" aria-selected="false">A：ブラウザでデコード<span>latent補間</span></button>
+    </nav>
+  </header>
+
+  <section class="controls">
+    <label>スタイル <select id="style"></select></label>
+  </section>
+
+  <section class="padstage">
+    <div class="padwrap">
+      <div class="corner c00" id="k00"></div>
+      <div class="corner c10" id="k10"></div>
+      <div class="ax ax-l" id="axL"></div>
+      <div class="ax ax-r" id="axR"></div>
+      <div class="ax ax-t" id="axT"></div>
+      <div class="ax ax-b" id="axB"></div>
+      <div class="pad" id="pad" tabindex="0" role="slider" aria-label="ポーズの混ぜ具合（矢印キーでも動かせます）">
+        <div class="dot" id="dot"></div>
+      </div>
+      <div class="corner c01" id="k01"></div>
+      <div class="corner c11" id="k11"></div>
+    </div>
+    <div class="view">
+      <canvas id="view" width="512" height="512"></canvas>
+      <div class="status" id="status"></div>
+    </div>
+  </section>
+  <p class="weights" id="weights"></p>
+
+  <footer class="credits">
+    <p>画像生成：<a href="https://huggingface.co/cagliostrolab/animagine-xl-4.0" rel="noopener">Animagine XL 4.0</a>（CreativeML Open RAIL++-M）。「骨格で指定」は <a href="https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0" rel="noopener">ControlNet OpenPose SDXL</a>（Apache-2.0）で、骨格の関節位置だけを少しずつ動かして描いています。「言葉で指定」はポーズを言葉で書いて混ぜたものです。スタイルを切り替えて見比べてください。</p>
+    <p>ブラウザでのデコード：<a href="https://github.com/madebyollin/taesd" rel="noopener">TAESD / TAESDXL</a>（MIT）、<a href="https://onnxruntime.ai/" rel="noopener">ONNX Runtime Web</a>。中間状態の崩れや奇妙さも含めて遊ぶ技術デモです。</p>
+  </footer>
+
+  <details class="dev" id="dev" hidden>
+    <summary>開発用設定</summary>
+    <p id="devinfo"></p>
+  </details>
+</main>
+<script>window.BIO_MIXER = { root: "../", data: "../data/pose/" };</script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.webgpu.min.js"></script>
+<script src="../pad.js?v=13"></script>
+</body>
+</html>

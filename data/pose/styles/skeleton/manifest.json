@@ -1,0 +1,50 @@
+{
+  "id": "skeleton",
+  "name": "骨格で指定",
+  "model": "cagliostrolab/animagine-xl-4.0",
+  "controlnet": "xinsir/controlnet-openpose-sdxl-1.0",
+  "license": "CreativeML Open RAIL++-M / Apache-2.0",
+  "prompt": "solo, 1boy, adult young man, dynamic pose, full body, looking at viewer, white shirt, jeans, modern, japanese manga style, clean lineart, cel shading, simple background, white background, safe, masterpiece, high score, great score, absurdres",
+  "negative": "nsfw, child, fantasy, armor, multiple views, multiple characters, scenery, frame, lowres, bad anatomy, bad hands, text, cropped, worst quality, low quality, low score, bad score, watermark, blurry",
+  "seed": 222,
+  "steps": 28,
+  "cfg": 5.0,
+  "controlnet_scale": 1.5,
+  "weights_storage": "fp8",
+  "sampler": "Euler",
+  "size": 768,
+  "frames": 7,
+  "latent_shape": [
+    1,
+    4,
+    96,
+    96
+  ],
+  "decoder": "taesdxl768",
+  "image_size": 512,
+  "creatures": [
+    "stand_down",
+    "squat_down",
+    "stand_up",
+    "squat_up"
+  ],
+  "mode": "grid2d",
+  "grid": 7,
+  "order": [
+    "stand_down",
+    "squat_down",
+    "stand_up",
+    "squat_up"
+  ],
+  "axes": {
+    "x": [
+      "立つ",
+      "しゃがむ"
+    ],
+    "y": [
+      "腕を下ろす",
+      "腕を上げる"
+    ]
+  },
+  "built_at": "2026-10-07T15:37:46"
+}

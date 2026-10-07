@@ -6,7 +6,7 @@ const params = new URLSearchParams(location.search);
 // スタイルごとのデコーダ（SD系=TAESD、SDXL系=TAESDXL）
 // ページごとの置き場所（別ページからは window.BIO_MIXER で上書き）
 const CONF = Object.assign({ root: "", data: "data/" }, window.BIO_MIXER || {});
-const DECODERS = { taesd: `${CONF.root}models/taesd_decoder.onnx`, taesdxl: `${CONF.root}models/taesdxl_decoder.onnx` };
+const DECODERS = { taesd: `${CONF.root}models/taesd_decoder.onnx`, taesdxl: `${CONF.root}models/taesdxl_decoder.onnx`, taesdxl768: `${CONF.root}models/taesdxl_decoder_768.onnx` };
 const latentShape = () => st.style.latent_shape ?? [1, 4, 64, 64];
 const latentSize = () => latentShape().reduce((x, y) => x * y, 1);
 
