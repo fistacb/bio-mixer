@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生物ミキサー：さがす</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=14">
+<style>
+  .s-intro { color: var(--muted); line-height: 1.8; max-width: 760px; }
+  .s-panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 16px 0; }
+  .s-panel h2 { font-size: 17px; margin: 0 0 10px; }
+  #chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  #chips button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  #chips button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 4px; max-height: 260px; overflow-y: auto; margin-top: 8px; }
+  #gallery button { padding: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg); cursor: pointer; aspect-ratio: 1; }
+  #gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .s-result { display: grid; grid-template-columns: 180px 1fr; gap: 18px; align-items: start; }
+  #qbox img { width: 100%; border-radius: 10px; border: 1px solid var(--line); display: block; }
+  .qword { font-size: 26px; font-weight: 700; padding: 18px 0 6px; }
+  .note { color: var(--muted); font-size: 12px; margin: 6px 0 0; line-height: 1.6; }
+  #summary { margin: 0 0 10px; line-height: 1.7; }
+  #hits { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+  #hits li { position: relative; cursor: pointer; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--bg); }
+  #hits img { width: 100%; aspect-ratio: 1; display: block; }
+  #hits .rank { position: absolute; left: 4px; top: 4px; background: rgba(0,0,0,.55); color: #fff; font-size: 11px; border-radius: 6px; padding: 0 6px; }
+  #hits .score { display: block; font-weight: 700; font-variant-numeric: tabular-nums; padding: 2px 6px 0; }
+  #hits .where { display: block; font-size: 11px; color: var(--muted); padding: 0 6px 4px; line-height: 1.4; }
+  #hist svg { width: 100%; height: auto; display: block; }
+  #hist .bar { fill: var(--line); } #hist .bar.hot { fill: var(--accent); }
+  #hist .cut { stroke: var(--sel); stroke-width: 2; stroke-dasharray: 4 3; }
+  #hist .lab { fill: var(--muted); font-size: 11px; font-family: inherit; }
+  @media (max-width: 640px) { .s-result { grid-template-columns: 1fr; } #qbox { max-width: 220px; } }
+</style>
+</head>
+<body>
+<main class="doc">
+  <header>
+    <div class="title">
+      <h1>生物ミキサー：さがす</h1>
+      <p class="note" id="count">読み込み中…</p>
+    </div>
+  </header>
+
+  <p class="s-intro">サイトにある画像を1枚ずつ「数の並び（ベクトル）」に変えておき、選んだ画像や言葉にどれだけ似ているかを計算して並べます。これが「ベクトル検索」の基本の動きです。似ているものは1つだけでなく何枚も見つかること、そして「似ている」がスコアという数字で決まることを確かめてみてください。</p>
+
+  <section class="s-panel">
+    <h2>言葉でさがす</h2>
+    <div id="chips"></div>
+  </section>
+
+  <section class="s-panel">
+    <h2>画像でさがす <select id="filter" aria-label="ページで絞り込む"></select></h2>
+    <p class="note">1枚えらぶと、その画像に似ている順に並びます。結果の画像を押すと、それで探し直せます。</p>
+    <div id="gallery"></div>
+  </section>
+
+  <section class="s-panel" id="result">
+    <h2>結果</h2>
+    <div class="s-result">
+      <div id="qbox"></div>
+      <div>
+        <p id="summary"></p>
+        <ol id="hits"></ol>
+      </div>
+    </div>
+    <h2 style="margin-top:18px">全画像のスコアの分布</h2>
+    <div id="hist"></div>
+    <p class="note">横軸がスコア、棒の高さがその範囲にある画像の枚数です。青い棒が上位12件に入った範囲です。上位のすぐ下にも画像がたくさんあり、「何件まで見せるか」は検索する側が決めていることが分かります。</p>
+  </section>
+
+  <article>
+    <h3>スコア（類似度）とは</h3>
+    <p>それぞれの画像は、768個の数が並んだベクトルになっています。768本の軸がある空間の中の「向き」だと考えてください。ここで使っているスコアは<strong>コサイン類似度</strong>で、2本の矢印の向きがどれだけそろっているかを表します。</p>
+    <figure class="diagram">
+      <svg viewBox="0 0 640 170" role="img" aria-label="コサイン類似度の図。向きがそろうほど1に近く、直角で0">
+        <g class="d-line"><line x1="40" y1="140" x2="190" y2="40"/><line x1="40" y1="140" x2="200" y2="60"/></g>
+        <text x="120" y="162">ほぼ同じ向き → 1 に近い</text>
+        <g class="d-line"><line x1="260" y1="140" x2="400" y2="60"/><line x1="260" y1="140" x2="410" y2="130"/></g>
+        <text x="335" y="162">少しずれる → 0.5 くらい</text>
+        <g class="d-line"><line x1="480" y1="140" x2="600" y2="140"/><line x1="480" y1="140" x2="480" y2="30"/></g>
+        <text x="545" y="162">直角 → 0</text>
+      </svg>
+      <figcaption>矢印の長さはそろえてあるので（長さ1に正規化）、スコアは「向きのそろい具合」だけで決まります。計算は、768個の数を掛け合わせて足すだけです。</figcaption>
+    </figure>
+    <ul>
+      <li><strong>画像どうしの比較</strong>：同じページの隣のマスどうしは、スコアがとても高くなります。別のページでも、ポーズや色が近いと高めに出ます。</li>
+      <li><strong>言葉と画像の比較</strong>：画像どうしより、スコアがずっと小さく出ます。それでも順番には意味があり、検索は「点数の大きさ」より「並び順」で使うものだと分かります。</li>
+      <li><strong>何を「近い」とみなすかはモデル次第</strong>：ポーズが近いもの、服が近いもの、画風が近いものが混ざって並ぶことがあります。ベクトルは意味の要約であって、人の感覚と完全には一致しません。</li>
+    </ul>
+
+    <h3>似ているものが複数あるとき</h3>
+    <p>検索は「答えを1つ当てる」ものではなく、「スコアの高い順に並べて、上から何件か見せる」ものです（上位k件、top-k と呼びます）。生物ミキサーの格子画像のように少しずつ違う絵がたくさんあると、ほぼ同点の候補が何枚も並びます。実際のサービスでは、同じような結果ばかりにならないよう、似すぎたものを間引く工夫を足すこともあります。</p>
+
+    <h3>生物ミキサーとの関係</h3>
+    <ul>
+      <li><strong>同じところ</strong>：どちらも、絵や言葉をベクトルにして、空間の中で「近いものは似ている」と考えます。ミキサーの「C：事前生成」タブは、パッドの点に近い格子画像を探して混ぜています。これは「近いものを探す」検索と同じ発想です。</li>
+      <li><strong>違うところ</strong>：検索は「すでにあるものの中から、近いものを返す」仕組みです。ミキサーの「A：ブラウザでデコード」は「指定した点の絵を新しく作る」仕組みです。探すのか、作るのか、が大きな違いです。</li>
+      <li><strong>規模の違い</strong>：ここでは数百枚なので全部と比べています。何百万件もあるときは全部と比べると遅いので、「だいたい近いものを速く探す」索引（近似最近傍探索）を使うのが普通です。</li>
+    </ul>
+    <h3>もっと知りたい人へ</h3>
+    <p>言葉の側のしくみ（文章の検索と、その土台になった BERT・ELECTRA）は、<a href="text/">ことばのベクトル</a>のページで触って確かめられます。</p>
+  </article>
+
+  <footer class="credits">
+    <p>このサイトの画像は、すべて画像生成AIで作ったものです。</p>
+    <p>Powered by Stability AI. 「ダークファンタジー」に使った SD-Turbo は Stability AI Community License で提供されています（This Stability AI Model is licensed under the <a href="https://huggingface.co/stabilityai/sd-turbo/blob/main/LICENSE.md" rel="noopener">Stability AI Community License</a>, Copyright © Stability AI Ltd. All Rights Reserved.）。</p>
+    <p>画像のベクトル化：<a href="https://huggingface.co/google/siglip-base-patch16-224" rel="noopener">SigLIP base patch16-224</a>（Google、Apache-2.0）。画像は事前にベクトルにしておき、このページでは比較の計算だけを行っています。検索語は英語に置き換えてモデルに渡しています（モデルが英語で学習されているため）。</p>
+    <p>画像：このサイトの各ページ用に生成したもの。<a href="https://huggingface.co/cagliostrolab/animagine-xl-4.0" rel="noopener">Animagine XL 4.0</a>（CreativeML Open RAIL++-M）、「ダークファンタジー」は <a href="https://huggingface.co/stabilityai/sd-turbo" rel="noopener">SD-Turbo</a>（Stability AI）、「ポーズ」「向き」の骨格指定は <a href="https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0" rel="noopener">ControlNet OpenPose SDXL</a>（Apache-2.0）を使っています。</p>
+  </footer>
+</main>
+<script src="search.js?v=2"></script>
+</body>
+</html>

@@ -54,8 +54,9 @@
   <p class="weights" id="weights"></p>
 
   <footer class="credits">
+    <p>このサイトの画像は、すべて画像生成AIで作ったものです。</p>
     <p>画像生成：<a href="https://huggingface.co/cagliostrolab/animagine-xl-4.0" rel="noopener">Animagine XL 4.0</a>（CreativeML Open RAIL++-M）。「骨格で指定」は <a href="https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0" rel="noopener">ControlNet OpenPose SDXL</a>（Apache-2.0）で描いています。「骨格で指定」は頭の左右・上下の角度を少しずつ変えて骨格（鼻・目・耳の位置）を作り直しています。「体全体で向く」はパッドを真上から見た床に見立て、点の方向へ全身を回した骨格で描きます（下＝正面、上＝後ろ）。骨格だけでは後ろ姿でも顔を描いてしまうため、後ろ側のマスほど「後ろ姿」の言葉を混ぜています。人物の言葉とシードは全コマ共通です。</p>
-    <p>ブラウザでのデコード：<a href="https://github.com/madebyollin/taesd" rel="noopener">TAESD / TAESDXL</a>（MIT）、<a href="https://onnxruntime.ai/" rel="noopener">ONNX Runtime Web</a>。中間状態の崩れや奇妙さも含めて遊ぶ技術デモです。</p>
+    <p>ブラウザでのデコード：<a href="https://github.com/madebyollin/taesd" rel="noopener">TAESD / TAESDXL</a>（MIT、ONNXに変換して同梱。<a href="../models/LICENSE-taesd.txt">ライセンス全文</a>）、<a href="https://onnxruntime.ai/" rel="noopener">ONNX Runtime Web</a>。中間状態の崩れや奇妙さも含めて遊ぶ技術デモです。</p>
   </footer>
 
   <details class="dev" id="dev" hidden>

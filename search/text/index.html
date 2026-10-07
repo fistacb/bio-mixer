@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生物ミキサー：ことばのベクトル</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css?v=14">
+<style>
+  .s-intro { color: var(--muted); line-height: 1.8; max-width: 760px; }
+  .s-panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 18px 0; }
+  .s-panel h2 { font-size: 18px; margin: 0 0 6px; }
+  .s-panel > p { margin: 4px 0 10px; line-height: 1.75; font-size: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .chips button { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .chips button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .note { color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .qline { font-weight: 700; margin: 8px 0 4px; }
+  #t-hits { list-style: none; padding: 0; margin: 0; max-height: 360px; overflow-y: auto; }
+  #t-hits li { position: relative; display: grid; grid-template-columns: 56px 1fr; gap: 8px; padding: 5px 8px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 14px; }
+  #t-hits li.top { font-weight: 700; }
+  #t-hits .score { font-variant-numeric: tabular-nums; z-index: 1; }
+  #t-hits .txt { z-index: 1; }
+  #t-hits .bar { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); opacity: .14; }
+  .sent { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; font-size: 18px; }
+  .sent .w { font: inherit; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 4px 8px; display: inline-flex; flex-direction: column; align-items: center; }
+  .sent button.w { cursor: pointer; }
+  .sent .w.mask { border-color: var(--sel); background: var(--sel); color: #fff; }
+  .sent .w small { font-size: 10px; color: var(--muted); }
+  #e-sent .w { background: color-mix(in srgb, #d9534f calc(var(--fake, 0) * 70%), var(--bg)); }
+  #e-sent .w.sus { text-decoration: underline 3px #d9534f; text-underline-offset: 4px; }
+  #e-sent .w.swapped { outline: 2px dashed var(--sel); outline-offset: 2px; }
+  .gloss { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+  #b-pred { list-style: none; padding: 0; margin: 8px 0; max-width: 460px; }
+  #b-pred li { position: relative; display: grid; grid-template-columns: 110px 1fr 56px; align-items: center; gap: 6px; padding: 3px 0; }
+  #b-pred .bar { height: 12px; background: var(--accent); border-radius: 3px; min-width: 2px; }
+  #b-pred .p { text-align: right; font-variant-numeric: tabular-nums; }
+  #b-pred li.hit .tok { font-weight: 700; color: var(--sel); }
+  .legend { display: inline-block; width: 60px; height: 10px; border-radius: 3px; background: linear-gradient(to right, var(--bg), #d9534f); vertical-align: middle; border: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<main class="doc">
+  <header><div class="title"><h1>生物ミキサー：ことばのベクトル</h1><p class="note"><a href="../">← さがす（画像のベクトル検索）へ戻る</a></p></div></header>
+
+  <p class="s-intro">「さがす」では、画像と言葉をベクトルにして近いものを探しました。このページでは、言葉の側を見ていきます。文章をベクトルにして探す体験と、その土台になった BERT・ELECTRA というモデルが「どうやって言葉を覚えたか」を、実際の計算結果で触って確かめられます。結果はあらかじめ計算してあり、ブラウザでモデルは動かしていません。</p>
+
+  <section class="s-panel">
+    <h2>1. 文章をさがす（日本語）</h2>
+    <p>26個の短い文章をベクトルにしてあります。検索語を選ぶか、一覧の文章を押すと、その文章に意味が近い順に並びます。同じ言葉を使っていなくても、意味が近ければ上に来ます。逆に「猫の手も借りたい」のように、同じ言葉を含んでいても意味が違う文がどこに並ぶかも見てみてください。</p>
+    <div class="chips" id="t-chips"></div>
+    <p class="qline">検索：<span id="t-query"></span></p>
+    <ol id="t-hits"></ol>
+    <p class="note">数字はコサイン類似度で、太字が上位5件です。</p>
+  </section>
+
+  <section class="s-panel">
+    <h2>2. BERT：隠した単語を当てる</h2>
+    <p>BERT は、文章の一部を隠して前後から当てる練習（マスク言語モデル）を大量に繰り返して、言葉の使われ方を覚えました。単語を押すと、その単語を [MASK] に隠して、BERT が考えた候補を確率付きで上位5件表示します。BERT は英語版なので、例文も英語です。</p>
+    <div class="chips" id="b-chips"></div>
+    <p class="gloss" id="b-gloss"></p>
+    <div class="sent" id="b-sent"></div>
+    <ol id="b-pred"></ol>
+    <p class="note" id="b-note"></p>
+  </section>
+
+  <section class="s-panel">
+    <h2>3. ELECTRA：すり替えを見抜く</h2>
+    <p>ELECTRA は「隠して当てる」の代わりに、「すり替えられた単語を見抜く」練習をしたモデルです。小さな生成役が単語をもっともらしい別の単語にすり替え、本体の判定役がすべての単語について「本物か、すり替えか」を見分けます。単語を押すとすり替えが起きます。生成役の一番の候補で置き換える「自然なすり替え」と、少し外れた候補で置き換える「不自然なすり替え」を切り替えられます。赤いほど、判定役が「すり替えだ」と考えています <span class="legend"></span>（色は文の中で比べた濃さで、いちばん怪しい単語に下線が付きます。数字は判定役が出した確率です）。この判定役は小さな版なので確率は全体に低めですが、どの単語が一番怪しいかの順番に注目してください。</p>
+    <div class="chips" id="e-chips"></div>
+    <div class="chips" id="e-mode" aria-label="すり替えの種類"></div>
+    <p class="gloss" id="e-gloss"></p>
+    <div class="sent" id="e-sent"></div>
+    <p class="note" id="e-note"></p>
+  </section>
+
+  <article>
+    <h3>BERT と ELECTRA のちがい</h3>
+    <div class="cards">
+      <div class="card"><h4>BERT（Google、2018年）</h4><p>文の約15%の単語を隠して当てる練習をします。前後の両方向の文脈を使うので、言葉の意味をとらえるのが得意です。ただし、1つの文から学べるのは隠した単語の分だけです。</p></div>
+      <div class="card"><h4>ELECTRA（Google・スタンフォード大、2020年）</h4><p>すべての単語について「本物かすり替えか」を判定するので、1つの文のすべての単語から学べます。そのため、同じ計算量なら BERT より効率よく学習できます。学習が終わると、生成役は捨てて判定役だけを使います。</p></div>
+    </div>
+
+    <h3>BERT をそのまま検索に使うと？</h3>
+    <p>BERT は言葉の理解の土台ですが、出力をそのまま平均してベクトルにすると、検索にはあまり向きません。どんな文どうしでも似た値が出やすいからです。そこで、「意味が近い文ほどベクトルも近くなる」ように追加で学習したモデル（Sentence-BERT など）が検索に使われます。上の「文章をさがす」も、その系統のモデルです。実際に計算した値を比べると、次のようになりました。</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>文のペア</th><th>関係</th><th>BERT そのまま</th><th>文ベクトル用</th></tr></thead>
+      <tbody id="cmp"></tbody>
+    </table></div>
+    <p class="note">数字はコサイン類似度です。BERT そのままは平均プーリング、文ベクトル用は多言語 MiniLM（Sentence-BERT 系）です。</p>
+
+    <h3>生物ミキサーとのつながり</h3>
+    <ul>
+      <li><strong>生物ミキサー（作る）</strong>：言葉をベクトルにして、そのベクトルの位置から絵を作ります。ここで使っている言葉のベクトル化（CLIP の文章側）も、BERT と同じ Transformer という仕組みです。</li>
+      <li><strong>さがす（探す）</strong>：画像と言葉を同じ空間のベクトルにして、近いものを並べます。</li>
+      <li><strong>ことばのベクトル（理解する）</strong>：BERT や ELECTRA の練習方法で言葉の使われ方を覚え、それを文の意味のベクトルに仕上げると、文章の検索ができるようになります。</li>
+    </ul>
+  </article>
+
+  <footer class="credits">
+    <p>使用モデル（いずれも Apache-2.0）：<a href="https://huggingface.co/google-bert/bert-base-uncased" rel="noopener">BERT base uncased</a>（Google）、<a href="https://huggingface.co/google/electra-small-generator" rel="noopener">ELECTRA small generator</a> / <a href="https://huggingface.co/google/electra-small-discriminator" rel="noopener">discriminator</a>（Google）、<a href="https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2" rel="noopener">paraphrase-multilingual-MiniLM-L12-v2</a>（sentence-transformers）。結果は事前に計算したもので、このページではモデルを動かしていません。例文はこのページ用に作ったものです。</p>
+  </footer>
+</main>
+<script src="text.js?v=3"></script>
+</body>
+</html>

@@ -54,8 +54,9 @@
   <p class="weights" id="weights"></p>
 
   <footer class="credits">
+    <p>このサイトの画像は、すべて画像生成AIで作ったものです。</p>
     <p>画像生成：<a href="https://huggingface.co/cagliostrolab/animagine-xl-4.0" rel="noopener">Animagine XL 4.0</a>（CreativeML Open RAIL++-M）。「骨格で指定」は <a href="https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0" rel="noopener">ControlNet OpenPose SDXL</a>（Apache-2.0）で、骨格の関節位置だけを少しずつ動かして描いています。「言葉で指定」はポーズを言葉で書いて混ぜたものです。スタイルを切り替えて見比べてください。</p>
-    <p>ブラウザでのデコード：<a href="https://github.com/madebyollin/taesd" rel="noopener">TAESD / TAESDXL</a>（MIT）、<a href="https://onnxruntime.ai/" rel="noopener">ONNX Runtime Web</a>。中間状態の崩れや奇妙さも含めて遊ぶ技術デモです。</p>
+    <p>ブラウザでのデコード：<a href="https://github.com/madebyollin/taesd" rel="noopener">TAESD / TAESDXL</a>（MIT、ONNXに変換して同梱。<a href="../models/LICENSE-taesd.txt">ライセンス全文</a>）、<a href="https://onnxruntime.ai/" rel="noopener">ONNX Runtime Web</a>。中間状態の崩れや奇妙さも含めて遊ぶ技術デモです。</p>
   </footer>
 
   <details class="dev" id="dev" hidden>
