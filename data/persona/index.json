@@ -1,0 +1,58 @@
+{
+  "creatures": [
+    {
+      "id": "young_cool",
+      "name": "若くてクール"
+    },
+    {
+      "id": "old_cool",
+      "name": "年配でクール"
+    },
+    {
+      "id": "young_hot",
+      "name": "若くて熱血"
+    },
+    {
+      "id": "old_hot",
+      "name": "年配で熱血"
+    }
+  ],
+  "styles": [
+    {
+      "id": "manga_xl",
+      "name": "現代マンガ",
+      "frames": 7,
+      "creatures": [
+        "young_cool",
+        "old_cool",
+        "young_hot",
+        "old_hot"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        128,
+        128
+      ],
+      "decoder": "taesdxl",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "young_cool",
+        "old_cool",
+        "young_hot",
+        "old_hot"
+      ],
+      "axes": {
+        "x": [
+          "青年",
+          "老人"
+        ],
+        "y": [
+          "クール",
+          "熱血"
+        ]
+      }
+    }
+  ]
+}

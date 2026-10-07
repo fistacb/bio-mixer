@@ -1,0 +1,52 @@
+{
+  "id": "manga_xl",
+  "name": "現代マンガ",
+  "model": "cagliostrolab/animagine-xl-4.0",
+  "license": "CreativeML Open RAIL++-M",
+  "prompt": "solo, 1boy, {subject}, full body, standing, looking at viewer, white shirt, jeans, modern, japanese manga style, clean lineart, cel shading, simple background, white background, safe, masterpiece, high score, great score, absurdres",
+  "negative": "fire, flame, nsfw, child, fantasy, armor, multiple views, multiple characters, scenery, frame, lowres, bad anatomy, bad hands, text, cropped, worst quality, low quality, low score, bad score, watermark, blurry",
+  "seeds": {
+    "young_cool": 222,
+    "old_cool": 222,
+    "young_hot": 222,
+    "old_hot": 222
+  },
+  "steps": 28,
+  "cfg": 5.0,
+  "sampler": "Euler",
+  "size": 1024,
+  "frames": 7,
+  "latent_shape": [
+    1,
+    4,
+    128,
+    128
+  ],
+  "decoder": "taesdxl",
+  "image_size": 512,
+  "creatures": [
+    "young_cool",
+    "old_cool",
+    "young_hot",
+    "old_hot"
+  ],
+  "built_at": "2026-10-07T10:29:50",
+  "mode": "grid2d",
+  "grid": 7,
+  "order": [
+    "young_cool",
+    "old_cool",
+    "young_hot",
+    "old_hot"
+  ],
+  "axes": {
+    "x": [
+      "青年",
+      "老人"
+    ],
+    "y": [
+      "クール",
+      "熱血"
+    ]
+  }
+}
