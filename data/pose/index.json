@@ -55,6 +55,78 @@
       }
     },
     {
+      "id": "skeleton_fixed",
+      "name": "骨格で指定・キャラ固定",
+      "frames": 7,
+      "creatures": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        96,
+        96
+      ],
+      "decoder": "taesdxl768",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "axes": {
+        "x": [
+          "立つ",
+          "しゃがむ"
+        ],
+        "y": [
+          "腕を下ろす",
+          "腕を上げる"
+        ]
+      }
+    },
+    {
+      "id": "skeleton_girl",
+      "name": "骨格で指定・女性",
+      "frames": 7,
+      "creatures": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "latent_shape": [
+        1,
+        4,
+        96,
+        96
+      ],
+      "decoder": "taesdxl768",
+      "mode": "grid2d",
+      "grid": 7,
+      "order": [
+        "stand_down",
+        "squat_down",
+        "stand_up",
+        "squat_up"
+      ],
+      "axes": {
+        "x": [
+          "立つ",
+          "しゃがむ"
+        ],
+        "y": [
+          "腕を下ろす",
+          "腕を上げる"
+        ]
+      }
+    },
+    {
       "id": "text_pose",
       "name": "言葉で指定",
       "frames": 7,
