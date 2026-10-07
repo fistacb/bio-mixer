@@ -64,6 +64,52 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 .padstage .view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 @media (max-width: 640px) { .padstage { grid-template-columns: 1fr; } }
 
+/* 解説ページ */
+.doc article { max-width: 760px; margin: 24px auto 0; line-height: 1.85; }
+.doc h2 { font-size: 24px; line-height: 1.5; margin: 8px 0 12px; }
+.doc h3 { font-size: 19px; margin: 44px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.doc h4 { font-size: 16px; margin: 18px 0 6px; }
+.doc .lead { font-size: 16px; color: var(--muted); }
+.doc ul { padding-left: 1.3em; }
+.doc li { margin: 6px 0; }
+.doc figure { margin: 18px 0; }
+.doc figure img.wide { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+.doc figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+.doc .note { font-size: 13px; color: var(--muted); }
+.toc { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 18px; margin: 18px 0; }
+.toc ol { margin: 0; padding-left: 1.4em; }
+.toc a { color: var(--ink); }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.card h4 { margin-top: 4px; }
+.card p { margin: 6px 0; font-size: 14px; line-height: 1.75; }
+.tablewrap { overflow-x: auto; }
+.doc table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.doc th, .doc td { border-bottom: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+.doc td:nth-child(2) { font-variant-numeric: tabular-nums; }
+.diagram svg { width: 100%; height: auto; display: block; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.d-box rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+.d-main rect { stroke: var(--accent); stroke-width: 2; }
+.diagram text { fill: var(--ink); font-size: 14px; text-anchor: middle; font-family: inherit; }
+.diagram .d-sub { fill: var(--muted); font-size: 12px; }
+.d-line { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+.d-dash { stroke-dasharray: 5 5; }
+.d-arrowhead { fill: var(--muted); }
+.d-tag rect { stroke: none; }
+.d-tag text { font-size: 12px; font-weight: 700; fill: #fff; }
+.d-tag-c rect { fill: var(--accent); }
+.d-tag-a rect { fill: var(--sel); }
+.d-space { fill: var(--bg); stroke: var(--line); }
+.d-dot circle { stroke: #fff; stroke-width: 2; }
+.d-animal circle { fill: var(--accent); }
+.d-human circle { fill: var(--sel); }
+.d-mid { fill: var(--muted); }
+.try { margin-top: 44px; }
+.trybox { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; text-align: center; }
+.trybox img { width: 100%; max-width: 360px; aspect-ratio: 1; border-radius: 10px; display: block; margin: 0 auto; }
+.trybox .slider { margin-top: 10px; }
+@media (max-width: 640px) { .cards { grid-template-columns: 1fr; } .doc h2 { font-size: 20px; } }
+
 .credits { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.7; }
 .credits p { margin: 4px 0; }
 .credits a { color: var(--accent); }

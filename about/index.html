@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生物ミキサー：しくみ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=13">
+</head>
+<body>
+<main class="doc">
+  <header>
+    <div class="title">
+      <h1>生物ミキサー</h1>
+      <nav class="pages" aria-label="ページ">
+        <a href="../">どうぶつ</a>
+        <a href="../heroes/">ひと・けもの・竜</a>
+        <a href="../persona/">年齢×性格</a>
+        <a href="./" aria-current="page">しくみ</a>
+      </nav>
+    </div>
+  </header>
+
+  <article>
+    <h2>画像生成AIは、どうやって「中間の姿」を描いているのか</h2>
+    <p class="lead">このサイトでは、2つ（または4つ）の生き物を混ぜた「中間の姿」を眺められます。ここでは、その裏で動いている画像生成AIの一般的な仕組みを、このサイトで実際に作った画像を例に説明します。</p>
+
+    <nav class="toc" aria-label="目次">
+      <ol>
+        <li><a href="#flow">絵ができるまでの流れ</a></li>
+        <li><a href="#vector">言葉はベクトル（数の並び）になる</a></li>
+        <li><a href="#noise">ノイズから少しずつ描く</a></li>
+        <li><a href="#mix">どこで混ぜるか：案Cと案A</a></li>
+        <li><a href="#distance">遠い組み合わせほど「謎の姿」になる</a></li>
+        <li><a href="#align">そろえると、変化が見やすくなる</a></li>
+        <li><a href="#literal">言葉は文字どおりに描かれる</a></li>
+        <li><a href="#llm">LLM（文章のAI）との共通点と違い</a></li>
+        <li><a href="#notes">このサイトの作り方と注意点</a></li>
+      </ol>
+    </nav>
+
+    <section id="flow">
+      <h3>1. 絵ができるまでの流れ</h3>
+      <p>このサイトで使った画像生成AI（拡散モデルと呼ばれる種類）は、大きく分けて次の順番で絵を描きます。</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 300" role="img" aria-label="プロンプトからベクトル、ノイズからの描画、圧縮された絵、画像への流れの図">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrowhead"/></marker>
+          </defs>
+          <g class="d-box"><rect x="10" y="30" width="150" height="56" rx="10"/><text x="85" y="54">言葉（プロンプト）</text><text x="85" y="74" class="d-sub">「かわいい犬」など</text></g>
+          <g class="d-box"><rect x="200" y="30" width="150" height="56" rx="10"/><text x="275" y="54">テキストエンコーダ</text><text x="275" y="74" class="d-sub">言葉→ベクトル</text></g>
+          <g class="d-box"><rect x="10" y="190" width="150" height="56" rx="10"/><text x="85" y="214">シード（乱数の種）</text><text x="85" y="234" class="d-sub">→ 最初のノイズ</text></g>
+          <g class="d-box d-main"><rect x="390" y="100" width="170" height="80" rx="12"/><text x="475" y="130">ノイズを少しずつ</text><text x="475" y="150">取り除く（×28回）</text><text x="475" y="170" class="d-sub">UNet</text></g>
+          <g class="d-box"><rect x="600" y="30" width="150" height="56" rx="10"/><text x="675" y="54">圧縮された絵</text><text x="675" y="74" class="d-sub">latent（128×128×4）</text></g>
+          <g class="d-box"><rect x="600" y="190" width="150" height="56" rx="10"/><text x="675" y="214">デコーダ（VAE）</text><text x="675" y="234" class="d-sub">→ 1024px の画像</text></g>
+          <path class="d-line" d="M160,58 H198" marker-end="url(#ar)"/>
+          <path class="d-line" d="M350,58 H420 V98" marker-end="url(#ar)"/>
+          <path class="d-line" d="M160,218 H420 V182" marker-end="url(#ar)"/>
+          <path class="d-line" d="M560,120 H580 V58 H598" marker-end="url(#ar)"/>
+          <path class="d-line" d="M675,86 V188" marker-end="url(#ar)"/>
+          <g class="d-tag d-tag-c"><rect x="292" y="92" width="96" height="24" rx="12"/><text x="340" y="108">案Cで混ぜる</text></g>
+          <g class="d-tag d-tag-c"><rect x="250" y="248" width="96" height="24" rx="12"/><text x="298" y="264">案Cで混ぜる</text></g>
+          <g class="d-tag d-tag-a"><rect x="678" y="125" width="78" height="24" rx="12"/><text x="717" y="141">案Aで混ぜる</text></g>
+        </svg>
+        <figcaption>拡散モデル（このサイトでは Animagine XL 4.0）の大まかな流れ。「案C」「案A」は、このサイトで2つの生き物を混ぜている場所です（4章で説明します）。</figcaption>
+      </figure>
+      <p>ポイントは、AIが絵を<strong>いきなり描くのではなく、ノイズ（砂嵐のような乱れ）から少しずつ整えていく</strong>ことと、その方向づけに<strong>言葉をベクトルにしたもの</strong>を使うことです。</p>
+    </section>
+
+    <section id="vector">
+      <h3>2. 言葉はベクトル（数の並び）になる</h3>
+      <p>AIは言葉をそのまま理解しているわけではありません。テキストエンコーダが、言葉を<strong>数千個の数が並んだもの（ベクトル）</strong>に変換します。ベクトルは「巨大な空間の中の1点」と考えることができます。</p>
+      <p>学習の結果、<strong>意味の近い言葉は近い場所に、遠い言葉は遠い場所に</strong>置かれます。例えば「狼」と「熊」は近く、「狼」と「青年」は遠くなります。</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 220" role="img" aria-label="ベクトル空間で狼・熊・ドラゴンが近くに集まり、青年・女性が離れた場所にある図">
+          <rect class="d-space" x="10" y="10" width="740" height="200" rx="14"/>
+          <g class="d-dot d-animal"><circle cx="150" cy="120" r="9"/><text x="150" y="98">狼</text></g>
+          <g class="d-dot d-animal"><circle cx="185" cy="135" r="9"/><text x="200" y="165">熊</text></g>
+          <g class="d-dot d-animal"><circle cx="130" cy="150" r="9"/><text x="112" y="180">ドラゴン</text></g>
+          <g class="d-dot d-human"><circle cx="580" cy="90" r="9"/><text x="580" y="68">青年</text></g>
+          <g class="d-dot d-human"><circle cx="620" cy="125" r="9"/><text x="640" y="152">女性</text></g>
+          <path class="d-line d-dash" d="M160,120 L570,92"/>
+          <circle class="d-mid" cx="365" cy="106" r="7"/><text class="d-sub" x="365" y="86">直線の中間</text>
+          <text class="d-sub" x="150" y="40">動物どうしは近い</text>
+          <text class="d-sub" x="600" y="40">人どうしも近い</text>
+        </svg>
+        <figcaption>ベクトル空間のイメージ（実際は数千次元ですが、2次元に描いています）。2つの点を直線で結んだ「中間の点」を描かせると、中間の姿が生まれます。</figcaption>
+      </figure>
+      <p>このサイトの「中間の姿」は、2つの言葉のベクトルを<strong>割合を変えて足し合わせた点</strong>（例：狼70%＋青年30%）をAIに渡して描かせたものです。</p>
+    </section>
+
+    <section id="noise">
+      <h3>3. ノイズから少しずつ描く</h3>
+      <p>拡散モデルは、学習のときに「きれいな絵に少しずつノイズを足していき、それを元に戻す」練習をしています。描くときはその逆で、<strong>完全なノイズから出発し、言葉のベクトルを手がかりに、ノイズを少しずつ取り除いて</strong>絵にしていきます。</p>
+      <figure>
+        <img src="img/denoise_steps.jpg" alt="ノイズから犬の絵ができていく6段階" loading="lazy" class="wide">
+        <figcaption>左端が出発点のノイズ、右へ行くほど描き込みが進んだ状態（28回中の1・4・8・14・28回目）。途中の状態を軽量デコーダで見えるようにしたものなので、途中の色は実際より乱れて見えます。</figcaption>
+      </figure>
+      <p>出発点のノイズは<strong>シード</strong>という数で決まります。同じ言葉・同じシード・同じ手順なら、毎回同じ絵になります。シードを変えると、ポーズや構図が変わります。</p>
+    </section>
+
+    <section id="mix">
+      <h3>4. どこで混ぜるか：案Cと案A</h3>
+      <p>このサイトでは、2つの生き物を「どの段階で混ぜるか」が違う2つの方式を見比べられます。</p>
+      <div class="cards">
+        <div class="card"><h4>案C：描く前に混ぜる</h4><p>言葉のベクトル（と出発点のノイズ）を混ぜてから、AIに<strong>一から描き直させます</strong>。AIが「混ざった指示」を解釈して描くので、中間でも<strong>1匹の生き物</strong>として描かれます。重い計算なので、画像は事前にPCで作っておきます。</p></div>
+        <div class="card"><h4>案A：描き終わった絵を混ぜる</h4><p>完成した2枚の絵の<strong>圧縮データ（latent）を混ぜて</strong>、デコーダで画像に戻します。描き直しはしないので、<strong>2枚が透けて重なったような</strong>見え方になります。軽い計算なので、ブラウザの中でその場で計算しています。</p></div>
+      </div>
+      <figure>
+        <img src="img/compare_ac.jpg" alt="犬からタコへの中間。上が案A、下が案C" loading="lazy" class="wide">
+        <figcaption>犬→タコ（0%・25%・50%・75%・100%）。上段が案A（圧縮データを混ぜる）、下段が案C（言葉を混ぜて描き直す）。</figcaption>
+      </figure>
+      <p>同じ「中間」でも、<strong>意味（言葉）で混ぜるか、見た目（絵のデータ）で混ぜるか</strong>で、結果が大きく変わります。</p>
+    </section>
+
+    <section id="distance">
+      <h3>5. 遠い組み合わせほど「謎の姿」になる</h3>
+      <p>ベクトルの近い組み合わせ（熊↔狼）は、中間でもどちらかの動物らしい姿を保ち、なめらかに変わります。遠い組み合わせ（狼↔青年）は、中間で<strong>どちらでもない姿</strong>（このモデルでは小さな獣人のようなキャラ）になります。</p>
+      <figure>
+        <img src="img/heroes_mid.jpg" alt="狼から青年、ドラゴンから女性、熊から狼への中間" loading="lazy" class="wide">
+        <figcaption>上：狼→青年、中：ドラゴン→女性、下：熊→狼。</figcaption>
+      </figure>
+      <p>実際に、このサイトで使った言葉のベクトルどうしの距離を測ると、次のようになりました（数字が大きいほど遠い）。</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>組み合わせ</th><th>距離</th><th>中間の姿</th></tr></thead>
+          <tbody>
+            <tr><td>狼 × 熊</td><td>0.016</td><td>なめらかに変わる</td></tr>
+            <tr><td>熊 × ドラゴン</td><td>0.019</td><td>なめらかに変わる</td></tr>
+            <tr><td>青年 × 女性</td><td>0.365</td><td>—</td></tr>
+            <tr><td>人 × 動物（6組）</td><td>0.41〜0.43</td><td>どれも似た「謎のキャラ」</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">距離は「1−コサイン類似度」で、プロンプト全体のベクトルを比べたものです。この測り方はプロンプトの長さや語順の違いにも影響されるので、目安として見てください。</p>
+      <p>中間で何が描かれるかは、<strong>ベクトルの置かれ方</strong>と、<strong>そのモデルが学習で何を多く見てきたか</strong>の両方で決まります。このモデルはアニメのキャラクターを中心に学習しているため、あいまいな場所ではアニメキャラとして描きやすいと考えられます。また、直線で結んだ中間が「意味の上での中間（半分人・半分狼）」になる保証は、どのモデルにもありません。</p>
+    </section>
+
+    <section id="align">
+      <h3>6. そろえると、変化が見やすくなる</h3>
+      <p>変化を見やすくするには、<strong>違いを1か所に絞る</strong>のが効果的です。「年齢×性格」のページでは、4人の言葉の形・服装・シードをすべてそろえ、「若い／年配」「クール／熱血」の言葉だけを変えました。</p>
+      <figure>
+        <img src="img/persona_grid.jpg" alt="年齢と性格の7×7の格子画像" loading="lazy" class="wide">
+        <figcaption>左→右：青年→老人、上→下：クール→熱血。4つの角の言葉を、割合を変えて混ぜた49枚。</figcaption>
+      </figure>
+    </section>
+
+    <section id="literal">
+      <h3>7. 言葉は文字どおりに描かれる</h3>
+      <p>最初、熱血を表すために「hot-blooded（熱血）」「fiery eyes（燃えるような目）」と書いたところ、AIは<strong>本当に頭が燃えているキャラ</strong>を描きました。言葉の比喩的な意味ではなく、学習した絵と結びついた<strong>見た目</strong>として解釈されるためです。</p>
+      <figure>
+        <img src="img/persona_fire.jpg" alt="熱血側が炎のキャラになった格子画像" loading="lazy" class="wide">
+        <figcaption>「炎の熱血」スタイル。下の2段で、急に炎のキャラに切り替わります。言葉を「表情としぐさ」に変えたものが「現代マンガ」スタイルです。</figcaption>
+      </figure>
+    </section>
+
+    <section id="llm">
+      <h3>8. LLM（文章のAI）との共通点と違い</h3>
+      <p>ChatGPTやClaudeのような文章を扱うAI（大規模言語モデル、LLM）も、言葉をベクトルにして扱う点は同じです。ここでは一般的な仕組みとして整理します。</p>
+      <h4>共通点</h4>
+      <ul>
+        <li><strong>言葉をベクトルにする：</strong>LLMも文章を「トークン」という単位に区切り、それぞれを数百〜数千次元のベクトルに変換してから処理します。画像生成のテキストエンコーダも、LLMと同じ「Transformer」という仕組みでできています。</li>
+        <li><strong>意味の近さが距離になる：</strong>意味が似た言葉ほど、ベクトル空間で近くに置かれる傾向があります。</li>
+        <li><strong>置き方はモデルしだい：</strong>どの言葉をどこに置くかは学習で決まるので、モデルが違えば配置も変わります。</li>
+      </ul>
+      <h4>違い</h4>
+      <ul>
+        <li><strong>ベクトルの使い道：</strong>画像生成では、ベクトルは「何を描くか」の指示で、絵そのものはノイズから描く部分が作ります。LLMは、ベクトルを何層もの計算で処理して、<strong>次に来るトークンを1つずつ予測</strong>し、文章を組み立てます。</li>
+        <li><strong>文脈で変わる：</strong>LLMの内部では、同じ単語でも前後の文脈によってベクトルが変わっていきます。「1つの言葉＝1つの点」と言えるのは、入口の部分（埋め込み）までです。</li>
+        <li><strong>混ぜた結果の見え方：</strong>画像では、ベクトルの中間を「中間の絵」として目で見られます。LLMで2つの単語のベクトルを混ぜても、なめらかな「中間の文章」になるとは限らず、このサイトのように目で確かめるのは難しいです。</li>
+      </ul>
+      <p class="note">この節は一般的な説明です。このサイトで実際に計測・確認したのは、画像生成モデル（Animagine XL 4.0）のテキストエンコーダの距離までです。</p>
+    </section>
+
+    <section id="notes">
+      <h3>9. このサイトの作り方と注意点</h3>
+      <ul>
+        <li><strong>使ったモデル：</strong>Animagine XL 4.0（SDXL系、ライセンス：CreativeML Open RAIL++-M）、SD-Turbo（「ダークファンタジー」スタイル）。</li>
+        <li><strong>事前生成（案C）：</strong>PCのGPU（GeForce RTX 2070 SUPER）で、1枚あたり約19秒（1024px・28回）。表示は512pxに縮小しています。</li>
+        <li><strong>ブラウザでの計算（案A）：</strong>TAESD / TAESDXL（軽量デコーダ、MIT）をONNX形式に変換し、ONNX Runtime Web（WebGPU）で動かしています。</li>
+        <li><strong>中間の作り方：</strong>言葉のベクトルは割合で足し合わせ、出発点のノイズはシードが違う場合に球面補間（slerp）で混ぜています。毎回同じ結果になるよう、ランダム性のない手順（Euler）で描いています。</li>
+        <li>中間の姿の崩れや奇妙さも含めて楽しむ技術デモです。</li>
+      </ul>
+    </section>
+
+    <section class="try">
+      <h3>試してみる：狼 → 青年</h3>
+      <p>スライダーを動かすと、事前に描いた16枚の中間を順に表示します（「ひと・けもの・竜」と同じ画像です）。</p>
+      <div class="trybox">
+        <img id="tryImg" src="../data/heroes/styles/manga_xl/frames/wolf__youngman/00.webp" alt="狼から青年への中間画像">
+        <div class="slider"><span>狼</span><input type="range" id="tryT" min="0" max="15" value="0" aria-label="狼から青年への割合"><span>青年</span></div>
+        <p class="note" id="tryLabel">狼 100% ／ 青年 0%</p>
+      </div>
+    </section>
+  </article>
+
+  <footer class="credits">
+    <p>画像生成：<a href="https://huggingface.co/cagliostrolab/animagine-xl-4.0" rel="noopener">Animagine XL 4.0</a>（CreativeML Open RAIL++-M）、<a href="https://huggingface.co/stabilityai/sd-turbo" rel="noopener">SD-Turbo</a>（Stability AI）。デコード：<a href="https://github.com/madebyollin/taesd" rel="noopener">TAESD / TAESDXL</a>（MIT）、<a href="https://onnxruntime.ai/" rel="noopener">ONNX Runtime Web</a>。</p>
+  </footer>
+</main>
+<script>
+  const tryT = document.getElementById("tryT"), tryImg = document.getElementById("tryImg"), tryLabel = document.getElementById("tryLabel");
+  const pre = []; for (let i = 0; i < 16; i++) { const im = new Image(); im.src = `../data/heroes/styles/manga_xl/frames/wolf__youngman/${String(i).padStart(2, "0")}.webp`; pre.push(im); }
+  tryT.addEventListener("input", () => {
+    const i = +tryT.value, b = Math.round(i / 15 * 100);
+    tryImg.src = pre[i].src; tryLabel.textContent = `狼 ${100 - b}% ／ 青年 ${b}%`;
+  });
+</script>
+</body>
+</html>
